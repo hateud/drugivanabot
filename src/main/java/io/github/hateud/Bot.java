@@ -34,7 +34,7 @@ public class Bot extends TelegramLongPollingBot {
     public String getBotUsername() { return "johnsdrugbot"; }
 
     @Override
-    public String getBotToken() { return "8426928345:AAEvVJclUt1YktYdO1aWNlxBZCly47yz_cM"; }
+    public String getBotToken() { return ""; }
 
     @Override
     public void onRegister() {
@@ -102,4 +102,5 @@ public class Bot extends TelegramLongPollingBot {
 //        users.putIfAbsent(userId, new User(userId));
 //    }
 }
+
 
